@@ -1,4 +1,4 @@
-import sys, pygame, character, lazer
+import sys, pygame, character, gamemap
 pygame.init()
 pygame.display.set_caption('AP Game')
 black = 0, 0, 0
@@ -7,24 +7,27 @@ screen = pygame.display.set_mode(size)
 playerblock = pygame.image.load("player.png")
 player = character.Character(20, 215, 30, 30, playerblock)
 background = pygame.image.load("background.png")
-blocks = []
-lazers = []
+frame = 300
+maps = gamemap.GameMap("map.txt")
 
 def render():
     screen.fill(black)
     screen.blit(background, (0, 0))
     player.render(screen)
-    for lazer in lazers:
-    	lazer.render(screen)
+    maps.render(screen)
     pygame.display.flip()
 
 def update():
     global lazers
-    player.update(blocks)
+    global frame
+    player.update(maps.getBlocks())
     if pygame.mouse.get_pressed()[0]:
-    	lazers.append(lazer.Lazer(player.getX() + 15, player.getY() + 15))
-    for lazerz in lazers:
-    	lazerz.update()
+    	if frame % 300 == 0:
+    		player.addLazer()
+    	frame += 1
+    if frame > 300 and not pygame.mouse.get_pressed()[0]:
+    	frame = 300
+    maps.update()
 
 while(True):
 	update()
