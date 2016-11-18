@@ -5,7 +5,7 @@ black = 0, 0, 0
 size = width, height, = 640, 480
 screen = pygame.display.set_mode(size)
 playerblock = pygame.image.load("player.png")
-player = character.Character(20, 215, 30, 30, playerblock)
+player = character.Character(50, 215, 30, 30, playerblock)
 background = pygame.image.load("background.png")
 frame = 300
 maps = gamemap.GameMap("map.txt")
