@@ -8,6 +8,7 @@ class Block(object):
 		self.h = h
 		self.vx = 0
 		self.vy = 0
+		self.imagestr = image
 		self.image = pygame.image.load(image)
 		self.image = pygame.transform.scale(self.image, (self.w, self.h))
 
@@ -29,3 +30,6 @@ class Block(object):
 
 	def getH(self):
 		return self.h
+
+	def getImage(self):
+		return self.imagestr
