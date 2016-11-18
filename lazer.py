@@ -17,9 +17,15 @@ class Lazer(object):
 		if self.alive:
 			screen.blit(self.image, (self.x, self.y))
 
-	def update(self):
+	def update(self, blocks):
 		self.x += self.vx
 		self.y += self.vy
+		for block in blocks:
+			if self.x < block.getX() + block.getW() and self.x + 5 > block.getX() and self.y < block.getY() + block.getH() and self.y + 5 > block.getY():
+				if self.x + 5 > block.getX() or self.x < block.getX() + block.getW():
+					self.vx = -self.vx
+				elif self.y + 5 > block.getY() or self.y < block.getY() + block.getH():
+					self.vy = -self.vy 
 		if self.x <= 0 or self.x >= 640:
 			self.vx = -self.vx
 			self.bounces += 1
