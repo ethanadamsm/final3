@@ -20,7 +20,7 @@ class Character(object):
 
 	def update(self, blocks):
 		for lazer in self.lazers:
-			lazer.update()
+			lazer.update(blocks)
 			if not lazer.getAlive():
 				self.lazers.remove(lazer) 
 		if self.x < 0:
