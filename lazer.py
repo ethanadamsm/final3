@@ -20,12 +20,30 @@ class Lazer(object):
 	def update(self, blocks):
 		self.x += self.vx
 		self.y += self.vy
+
 		for block in blocks:
-			if self.x < block.getX() + block.getW() and self.x + 5 > block.getX() and self.y < block.getY() + block.getH() and self.y + 5 > block.getY():
-				if self.x + 5 > block.getX() or self.x < block.getX() + block.getW():
-					self.vx = -self.vx
-				elif self.y + 5 > block.getY() or self.y < block.getY() + block.getH():
-					self.vy = -self.vy 
+			w = 0.5 * (5 + block.getW())
+			h = 0.5 * (5 + block.getH())
+			dx = (self.x + (5 / 2.0)) - (block.getX() + (block.getW() / 2))
+			dy = (self.y + (5 / 2.0)) - (block.getY() + (block.getH() / 2))
+
+			if(abs(dx) <= w and abs(dy) <= h):
+				wy = w * dy
+				hx = h * dx
+				if (wy > hx):
+					if(wy > -hx):
+						self.vy = -self.vy
+						self.bounces += 1
+					else:
+						self.vx = -self.vx
+						self.bounces += 1
+				else:
+					if(wy > -hx):
+						self.vx = -self.vx
+						self.bounces += 1
+					else:
+						self.vy = -self.vy
+						self.bounces += 1
 		if self.x <= 0 or self.x >= 640:
 			self.vx = -self.vx
 			self.bounces += 1
