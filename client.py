@@ -15,7 +15,7 @@ def fetch_coroutine(url):
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.write("Hello, world")
-        data = fetch_coroutine("localhost:8888")
+        data = fetch_coroutine("squaresserver.buttonfans.com")
         self.write(data)
         print data
 
