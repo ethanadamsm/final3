@@ -1,4 +1,4 @@
-import sys, pygame, character, gamemap
+import sys, pygame, character, gamemap, socket
 pygame.init()
 pygame.display.set_caption('AP Game')
 black = 0, 0, 0
@@ -9,6 +9,13 @@ player = character.Character(50, 215, 30, 30, playerblock)
 background = pygame.image.load("background.png")
 frame = 300
 maps = gamemap.GameMap("map.txt")
+
+IP = ''
+PORT = 9000
+BUFFER_SIZE = 1024
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((IP, PORT))
 
 def render():
     screen.fill(black)
@@ -30,7 +37,10 @@ def update():
     maps.update()
 
 while(True):
+	global s 
+	global player
 	update()
+	s.send(str(player.getX()) + ", " + str(player.getY()))
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT: sys.exit()
 		if event.type == pygame.KEYDOWN:
