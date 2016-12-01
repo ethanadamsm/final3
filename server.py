@@ -1,42 +1,43 @@
-import tornado.ioloop
-import tornado.web
-import tornado.websocket
-
-from tornado.options import define, options, parse_command_line
-
-define("port", default=8888, help="run on the given port", type=int)
-
-# we gonna store clients in dictionary..
-clients = dict()
-
-class IndexHandler(tornado.web.RequestHandler):
-    @tornado.web.asynchronous
-    def get(self):
-        self.render("index.html")
-
-class WebSocketHandler(tornado.websocket.WebSocketHandler):
-    def open(self, *args):
-        self.id = self.get_argument("Id")
-        self.stream.set_nodelay(True)
-        clients[self.id] = {"id": self.id, "object": self}
-
-    def on_message(self, message):        
-        """
-        when we receive some message we want some message handler..
-        for this example i will just print message to console
-        """
-        print "Client %s received a message : %s" % (self.id, message)
-        
-    def on_close(self):
-        if self.id in clients:
-            del clients[self.id]
-
-app = tornado.web.Application([
-    (r'/', IndexHandler),
-    (r'/', WebSocketHandler),
-])
-
-if __name__ == '__main__':
-    parse_command_line()
-    app.listen(options.port)
-    tornado.ioloop.IOLoop.instance().start()
+import socket
+from threading import Thread
+from SocketServer import ThreadingMixIn
+ 
+class ClientThread(Thread):
+ 
+    def __init__(self,ip,port):
+        Thread.__init__(self)
+        self.ip = ip
+        self.port = port
+        print "[+] New thread started for "+ip+":"+str(port)
+ 
+ 
+    def run(self):
+        while True:
+            data = conn.recv(2048)
+            locations.append((conn, data))
+            if not data: break
+            print "received data:", data
+            
+TCP_PORT = 9000
+BUFFER_SIZE = 20  # Normally 1024, but we want fast response
+TCP_IP = raw_input("Type server ip")
+ 
+tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+tcpsock.bind((TCP_IP, TCP_PORT))
+threads = []
+locations = []
+ 
+while True:
+    tcpsock.listen(4)
+    print "Waiting for incoming connections..."
+    (conn, (ip,port)) = tcpsock.accept()
+    newthread = ClientThread(ip,port)
+    newthread.start()
+    threads.append(newthread)
+    # for location in locations:
+    #     print location
+    # locations = []
+ 
+for t in threads:
+    t.join()
