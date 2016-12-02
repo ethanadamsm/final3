@@ -40,7 +40,9 @@ while(True):
 	global s 
 	global player
 	update()
-	s.send(str(player.getX()) + ", " + str(player.getY()))
+	s.send(str(player.getX()) + ", " + str(player.getY()) + ", " + str(socket.gethostbyname(socket.gethostname())))
+	data = s.recv(1024)
+	print data
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT: sys.exit()
 		if event.type == pygame.KEYDOWN:
