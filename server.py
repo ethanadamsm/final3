@@ -1,45 +1,55 @@
-import socket, sys
+import socket 
+import os
 from threading import Thread
-from SocketServer import ThreadingMixIn
+import threading
+import thread
+clients = set()
+clients_lock = threading.Lock()
+dataset = []
 
-TCP_IP = sys.argv[1]
-print(sys.argv[1])
- 
-class ClientThread(Thread):
- 
-    def __init__(self,ip,port):
-        Thread.__init__(self)
-        self.ip = ip
-        self.port = port
-        print "[+] New thread started for "+ip+":"+str(port)
- 
- 
-    def run(self):
+def listener(client, address):
+    print "Accepted connection from: ", address
+    with clients_lock:
+        clients.add(client)
+    try:
         while True:
-            data = conn.recv(2048)
-            locations.append((conn, data))
-            if not data: break
-            print "received data:", data
-            
-TCP_PORT = 9000
-BUFFER_SIZE = 20  # Normally 1024, but we want fast response
- 
-tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-tcpsock.bind((TCP_IP, TCP_PORT))
-threads = []
-locations = []
- 
+            data = client.recv(1024)
+            dataset.append(data)
+            if not data:
+                break
+            else:
+                print repr(data)
+                with clients_Lock:
+                    for c in clients:
+                        c.sendall(data)
+    finally:
+        with clients_lock:
+            clients.remove(client)
+            client.close()
+
+host = str(socket.gethostbyname(socket.gethostname()))
+port = 9000
+
+s = socket.socket()
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.bind((host, port))
+s.listen(2)
+th = []
+
 while True:
-    tcpsock.listen(4)
-    print "Waiting for incoming connections..."
-    (conn, (ip,port)) = tcpsock.accept()
-    newthread = ClientThread(ip,port)
-    newthread.start()
-    threads.append(newthread)
-    # for location in locations:
-    #     print location
-    # locations = []
- 
-for t in threads:
-    t.join()
+    print "Server is listening for connections>>>"
+    client, address = s.accept()
+    th.append(Thread(target = listener, args = (client, address)).start())
+    if len(clients) > 1:
+        if len(dataset) == 2:
+            for client in clients:
+                for data in dataset:
+                    mylist = my_string.replace(' ','').split(',')
+                    ip = mylist[2]
+                    if ip == str(socket.gethostbyname(client.gethostname())):
+                        print "same"
+                    else:
+                        client.sendall(data)
+
+
+s.close()
