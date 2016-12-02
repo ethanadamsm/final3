@@ -10,7 +10,7 @@ background = pygame.image.load("background.png")
 frame = 300
 maps = gamemap.GameMap("map.txt")
 
-IP = ''
+IP = sys.argv[1]
 PORT = 9000
 BUFFER_SIZE = 1024
 
