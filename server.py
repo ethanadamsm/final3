@@ -1,6 +1,9 @@
-import socket
+import socket, sys
 from threading import Thread
 from SocketServer import ThreadingMixIn
+
+TCP_IP = sys.argv[1]
+print(sys.argv[1])
  
 class ClientThread(Thread):
  
@@ -20,7 +23,6 @@ class ClientThread(Thread):
             
 TCP_PORT = 9000
 BUFFER_SIZE = 20  # Normally 1024, but we want fast response
-TCP_IP = raw_input("Type server ip")
  
 tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
