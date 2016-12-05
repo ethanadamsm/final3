@@ -8,6 +8,7 @@ clients_lock = threading.Lock()
 dataset = []
 
 def listener(client, address):
+    global clients_lock
     print "Accepted connection from: ", address
     with clients_lock:
         clients.add(client)
@@ -19,7 +20,7 @@ def listener(client, address):
                 break
             else:
                 print repr(data)
-                with clients_Lock:
+                with clients_lock:
                     for c in clients:
                         c.sendall(data)
     finally:
@@ -50,6 +51,5 @@ while True:
                         print "same"
                     else:
                         client.sendall(data)
-
 
 s.close()
