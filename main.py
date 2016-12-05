@@ -18,8 +18,8 @@ PORT = 9000
 BUFFER_SIZE = 1024
 
 if len(sys.argv) > 3:
-	player.setX(sys.argv[2])
-	player.setY(sys.argv[3])
+	player.setX(int(sys.argv[2]))
+	player.setY(int(sys.argv[3]))
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((IP, PORT))
