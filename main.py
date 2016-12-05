@@ -8,11 +8,18 @@ playerblock = pygame.image.load("player.png")
 player = character.Character(50, 215, 30, 30, playerblock)
 background = pygame.image.load("background.png")
 frame = 300
+frames = 0
 maps = gamemap.GameMap("map.txt")
+player2x = -50
+player2y = -50
 
 IP = sys.argv[1]
 PORT = 9000
 BUFFER_SIZE = 1024
+
+if len(sys.argv) > 3:
+	player.setX(sys.argv[2])
+	player.setY(sys.argv[3])
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((IP, PORT))
@@ -22,6 +29,7 @@ def render():
     screen.blit(background, (0, 0))
     player.render(screen)
     maps.render(screen)
+    screen.blit(playerblock, (player2x, player2y))
     pygame.display.flip()
 
 def update():
@@ -39,10 +47,20 @@ def update():
 while(True):
 	global s 
 	global player
+	global IP
 	update()
-	s.send(str(player.getX()) + ", " + str(player.getY()) + ", " + str(socket.gethostbyname(socket.gethostname())))
-	data = s.recv(1024)
-	print data
+	if frames >= 300:
+		#while True:
+		s.send(str(player.getX()) + ", " + str(player.getY()) + ", " + str(socket.gethostbyname(socket.gethostname())))
+		data = s.recv(1024)
+		mylist = data.replace(' ', '').split(',')
+		if str(socket.gethostbyname(socket.gethostname())) != mylist[2]:
+			player2x = int(mylist[0])
+			player2y = int(mylist[1])
+		if not data: break	
+		print(data)
+		#s.close()
+
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT: sys.exit()
 		if event.type == pygame.KEYDOWN:
@@ -60,3 +78,4 @@ while(True):
 			if event.key == pygame.K_s or event.key == pygame.K_w:
 				player.setVelY(0)
 	render()
+	frames += 1
