@@ -58,6 +58,12 @@ class Character(object):
 	def setVelY(self, vy):
 		self.vy = vy
 
+	def setX(self, x):
+		self.x = x
+
+	def setY(self, y):
+		self.y = y
+
 	def getX(self):
 		return self.x
 
