@@ -52,13 +52,22 @@ while(True):
 	if frames >= 300:
 		#while True:
 		s.send(str(player.getX()) + ", " + str(player.getY()) + ", " + str(socket.gethostbyname(socket.gethostname())))
-		data = s.recv(1024)
+		s.send('-')
+		data = s.recv(8)
 		mylist = data.replace(' ', '').split(',')
-		if str(socket.gethostbyname(socket.gethostname())) != mylist[2]:
-			player2x = float(mylist[0])
-			player2y = float(mylist[1])
+		if len(mylist) > 2:
+			print mylist[0] + " " + mylist[1] + " " + mylist[2]
+			if str(socket.gethostbyname(socket.gethostname())) != mylist[2]:
+				if mylist[0].count('.') == 1:
+					player2x = float(mylist[0])
+					player2y = float(mylist[1])
+				elif mylist[0] == "" or mylist[1] == "" or mylist[0].count('-') > 0 or mylist[1].count('-'):
+					break
+				else:
+					player2x = int(mylist[0])
+					player2y = int(mylist[1])
+
 		if not data: break	
-		print(data)
 		#s.close()
 
 	for event in pygame.event.get():
