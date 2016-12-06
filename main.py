@@ -55,8 +55,8 @@ while(True):
 		data = s.recv(1024)
 		mylist = data.replace(' ', '').split(',')
 		if str(socket.gethostbyname(socket.gethostname())) != mylist[2]:
-			player2x = int(mylist[0])
-			player2y = int(mylist[1])
+			player2x = float(mylist[0])
+			player2y = float(mylist[1])
 		if not data: break	
 		print(data)
 		#s.close()
