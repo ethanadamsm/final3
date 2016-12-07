@@ -55,3 +55,9 @@ class Lazer(object):
 
 	def getAlive(self):
 		return self.alive
+
+	def getX(self):
+		return self.x
+
+	def getY(self):
+		return self.y
