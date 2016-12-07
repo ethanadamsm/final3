@@ -15,6 +15,7 @@ def listener(client, address):
     try:
         while True:
             data = client.recv(1024)
+            if len(data.replace(' ', '').split(',')):
             dataset.append(data)
             if not data:
                 break
