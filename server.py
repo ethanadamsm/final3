@@ -15,8 +15,10 @@ def listener(client, address):
     try:
         while True:
             data = client.recv(1024)
-            if len(data.replace(' ', '').split(',')):
+            randomdata = data.replace(' ', '').split(',')
             dataset.append(data)
+            if len(randomdata) > 3:
+                data = randomdata[0] + ", " + randomdata[1] + ", " + str(socket.gethostbyname(socket.gethostname())) 
             if not data:
                 break
             else:
