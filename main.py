@@ -1,4 +1,4 @@
-import sys, pygame, character, gamemap, socket
+import sys, pygame, character, gamemap, socket, enemy, random
 pygame.init()
 pygame.display.set_caption('AP Game')
 black = 0, 0, 0
@@ -6,16 +6,20 @@ size = width, height, = 640, 480
 screen = pygame.display.set_mode(size)
 playerblock = pygame.image.load("player.png")
 player = character.Character(50, 215, 30, 30, playerblock)
+enemy1 = pygame.image.load("enemy1.png")
 background = pygame.image.load("background.png")
 frame = 300
 frames = 0
-maps = gamemap.GameMap("map.txt")
+frames2 = 0
+maps = gamemap.GameMap("map.txt", "spots.txt")
 player2x = -50
 player2y = -50
+enemies = []
 
 IP = sys.argv[1]
 PORT = 9000
 BUFFER_SIZE = 1024
+TIME = 600
 
 if len(sys.argv) > 3:
 	player.setX(int(sys.argv[2]))
@@ -28,6 +32,8 @@ def render():
     screen.fill(black)
     screen.blit(background, (0, 0))
     player.render(screen)
+    for enemy in enemies:
+    	enemy.render(screen)
     maps.render(screen)
     screen.blit(playerblock, (player2x, player2y))
     pygame.display.flip()
@@ -35,7 +41,13 @@ def render():
 def update():
     global lazers
     global frame
+    global frames2
     player.update(maps.getBlocks())
+    removeLazers = []
+    for enemys in enemies:
+    	enemys.update(maps.getBlocks(), player, player.getLazers())
+    	if enemys.getRemoveLazer() != "":
+    		removeLazers.append(enemys.getRemoveLazer())
     if pygame.mouse.get_pressed()[0]:
     	if frame % 300 == 0:
     		player.addLazer()
@@ -43,6 +55,21 @@ def update():
     if frame > 300 and not pygame.mouse.get_pressed()[0]:
     	frame = 300
     maps.update()
+    if frames % TIME == 0:
+    	spots = maps.getSpawns()
+    	spot = random.randint(0, len(spots) - 1)
+    	spot = spots[spot]
+    	enemies.append(enemy.Enemy(spot[0], spot[1], 30, 30, enemy1))
+    frames2 += 1
+    for enemys in enemies:
+	    for lazer in player.getLazers():
+	    	if lazer == enemys.getRemoveLazer():
+	    		player.removeLazer(lazer)
+	    if enemys.getAlive() == False:
+	    	enemies.remove(enemys)
+    # for lazer in removeLazers:
+    # 	if lazer != "":
+			#player.getLazers().remove(lazer)
 
 while(True):
 	# global s 
