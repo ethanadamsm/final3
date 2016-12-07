@@ -10,6 +10,7 @@ class Character(object):
 		self.vy = 0.0
 		self.image = image
 		self.lazers = []
+		self.alive = True
 		self.healthbar = healthbar.Healthbar(self.x - 10, self.y - 20, 100)
 
 	def render(self, screen):
@@ -74,6 +75,12 @@ class Character(object):
 		if len(self.lazers) < 6:
 			self.lazers.append(lazer.Lazer(self.x + 15, self.y + 15))
 
+	def removeLazer(self, lazer):
+		self.lazers.remove(lazer)
+
 	def clamp(self, objects):
 		objects.setX(self.x - 10)
 		objects.setY(self.y - 20)
+
+	def getLazers(self):
+		return self.lazers
