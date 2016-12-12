@@ -16,7 +16,7 @@ player2x = -50
 player2y = -50
 enemies = []
 
-IP = sys.argv[1]
+IP = socket.gethostbyname(socket.gethostname())
 PORT = 9000
 BUFFER_SIZE = 1024
 TIME = 600
